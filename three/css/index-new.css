@@ -1,0 +1,202 @@
+html {
+	margin: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	font-family: "microsoft yahei";
+
+}
+
+
+#mian{
+	width: 960px;
+	height: 660px;
+	border: #ffdf08 2px solid;
+	margin: 20px auto;
+	position: relative;
+}
+.neu-cast-cube{
+	width: 100px;
+	height: 100px;
+	text-align: center;
+	line-height: 100px;
+}
+.neu-cast-cube-before{
+	background-color: violet;
+}
+.neu-cast-cube-after{
+	background-color: pink;
+}
+.neu-cast-cube-right{
+	background-color: yellow;
+}
+.neu-cast-cube-left{
+	background-color: blue;
+}
+.neu-cast-cube-top{
+	background-color: red;
+}
+.neu-cast-cube-bottom{
+	background-color: green;
+}
+
+
+#topDom{
+	top: 0;
+	animation: move-top 5s infinite linear;
+	-webkit-animation: move-top 5s infinite linear;
+	
+}
+
+.neu-cast-pie-prop{
+	width: 315px;
+	height: 315px;
+	color: aliceblue;
+	text-align: center;
+	line-height: 315px;
+	background-image: url(../pic/index-clock.png);
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center center;
+
+	animation: move-rotate 30s infinite linear;
+	-webkit-animation: move-rotate 30s infinite linear;
+}
+.neu-cast-pie-text{
+	color: #ffffff;
+	transform: scale(0.8);
+}
+.neu-cast-pie-text p{
+	width: 107px;
+	height: 28px;
+	text-align: center;
+	line-height: 28px;
+	background-image: url(../pic/index-cycle-btn.png);
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center center;
+}
+
+
+
+
+
+.move-box{
+	width: 30px;
+	height: 30px;
+	background-color: #f00;
+	position: absolute;
+	left: 100px;
+	top: 50px;
+	z-index: 5;
+
+	animation: move-motion 10s infinite 2s;
+	-webkit-animation: move-motion 10s infinite 2s;
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * CSS3 动画
+ */
+
+/* 向上移动 */
+@keyframes move-top {
+	0%   {
+		top:0;
+	}
+	50%  {
+		top: 100px;
+	}
+	100% {
+		top:0;
+	}
+}
+@-webkit-keyframes move-top{
+	0%   {
+		top:0;
+	}
+	50%  {
+		top: 100px;
+	}
+	100% {
+		top:0;
+	}
+}
+/* 旋转 */
+@keyframes move-rotate {
+	0%   {
+		transform:rotate(0deg);
+		-webkit-transform:rotate(0deg);
+	}
+	50%  {
+		transform:rotate(180deg);
+		-webkit-transform:rotate(180deg);
+	}
+	100% {
+		transform:rotate(360deg);
+		-webkit-transform:rotate(360deg);
+	}
+}
+@-webkit-keyframes move-rotate{
+	0%   {
+		transform:rotate(0deg);
+		-webkit-transform:rotate(0deg);
+	}
+	50%  {
+		transform:rotate(180deg);
+		-webkit-transform:rotate(180deg);
+	}
+	100% {
+		transform:rotate(360deg);
+		-webkit-transform:rotate(360deg);
+	}
+}
+
+
+
+/* 折线运动 */
+@keyframes move-motion{
+	0%   {
+		left: 100px;
+	}
+	50%  {
+		left: 500px;
+		top: 50px;
+	}
+	100% {
+		top: 360px;
+		left: 500px;
+	}
+}
+@-webkit-keyframes move-motion{
+	0%   {
+		left: 100px;
+	}
+	50%  {
+		left: 500px;
+		top: 50px;
+	}
+	100% {
+		top: 360px;
+		left: 500px;
+	}
+}
