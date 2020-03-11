@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Organization Chart Plugin</title>
+
+	<link rel="stylesheet" href="css/jquery.orgchart.css">
+	<link rel="stylesheet" href="css/style.css">
+
+	<style type="text/css">
+		.orgchart {
+			background: #fff;
+		}
+		.orgchart td.left,
+		.orgchart td.right,
+		.orgchart td.top {
+			border-color: #aaa;
+		}
+		.orgchart td>.down {
+			background-color: #aaa;
+		}
+		.orgchart .middle-level .title {
+			background-color: #006699;
+		}
+		.orgchart .middle-level .content {
+			border-color: #006699;
+		}
+		.orgchart .product-dept .title {
+			background-color: #009933;
+		}
+		.orgchart .product-dept .content {
+			border-color: #009933;
+		}
+		.orgchart .rd-dept .title {
+			background-color: #993366;
+		}
+		.orgchart .rd-dept .content {
+			border-color: #993366;
+		}
+		.orgchart .pipeline1 .title {
+			background-color: #996633;
+		}
+		.orgchart .pipeline1 .content {
+			border-color: #996633;
+		}
+		.orgchart .frontend1 .title {
+			background-color: #cc0066;
+		}
+		.orgchart .frontend1 .content {
+			border-color: #cc0066;
+		}
+	</style>
+</head>
+
+<body>
+
+  	<div id="chart-container"></div>
+
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.orgchart.js"></script>
+	<script type="text/javascript">
+		$(function () {
+			var datascource = {
+				'name': 'Lao Lao',
+				'title': 'general manager',
+				'children': [
+					{
+						'name': 'Bo Miao',
+						'title': 'department manager',
+						'className': 'middle-level',
+						'children': [
+							{
+								'name': 'Li Jing',
+								'title': 'senior engineer',
+								'className': 'product-dept'
+							},
+							{
+								'name': 'Li Xin',
+								'title': 'senior engineer',
+								'className': 'product-dept',
+								'children': [
+									{
+										'name': 'To To',
+										'title': 'engineer',
+										'className': 'pipeline1'
+									},
+									{
+										'name': 'Fei Fei',
+										'title': 'engineer',
+										'className': 'pipeline1'
+									},
+									{
+										'name': 'Xuan Xuan',
+										'title': 'engineer',
+										'className': 'pipeline1'
+									}
+								]
+							}
+						]
+					},
+					{
+						'name': 'Su Miao',
+						'title': 'department manager',
+						'className': 'middle-level',
+						'children': [
+							{
+								'name': 'Pang Pang',
+								'title': 'senior engineer',
+								'className': 'rd-dept'
+							},
+							{
+								'name': 'Hei Hei',
+								'title': 'senior engineer',
+								'className': 'rd-dept',
+								'children': [
+									{
+										'name': 'Xiang Xiang',
+										'title': 'UE engineer',
+										'className': 'frontend1'
+									},
+									{
+										'name': 'Dan Dan',
+										'title': 'engineer',
+										'className': 'frontend1'
+									},
+									{
+										'name': 'Zai Zai',
+										'title': 'engineer',
+										'className': 'frontend1'
+									}
+								]
+							}
+						]
+					}
+				]
+			};
+
+			/**
+			 * 教程
+			 * https://blog.csdn.net/qq_40594137/article/details/80910040
+			 * github官网 https://github.com/dabeng/OrgChart
+			 * 
+			 */
+
+			// data                 【json or String】：数据
+			// pan                  【boolean 默:flase】：通过鼠标拖放来控制OrgChart
+			// zoom                 【boolean 默:false】：通过鼠标滚轮放大或缩放OrgChart
+			// zoominLimit          【number 默:7】：设置放大限制
+			// zoomoutLimit         【number 默:0.5】：设置缩放限制
+			// direction            【String 默:t2b】：T2B："从上到下"，B2T："从底到上"，L2R："左到右"，R2L："向左到右"
+			// verticalLevel        【integer(>=2)】：
+			// toggleSiblingsResp   【boolean 默:false】：通过单击左/右箭头分别显示/隐藏左/右兄弟节点
+			// ajaxURL              【json】：不同的优先级提供了发送不同节点的Ajax请求的URL
+			// visibleLevel         【number】：默认展开几级
+			// nodeId               【String 默:id】：将数据源的一个属性设置为每个OrgChart节点的唯一标识符。
+			// nodeTitle            【String 默:name】：将数据源的一个属性设置为OrgChart节点标题段的文本内容
+			// nodeContent          【String】：将数据源的一个属性设置为OrgChart节点的内容部分的文本内容。
+			// nodeTemplate         【function】：它是一个模板生成函数，用于定制任何复杂的节点内部结构
+			// createNode           【function】：它是用于自定义每个OrgCad节点的回调函数
+			// parentNodeSymbol     【String 默:fa-users】：使用图标暗示该节点有子节点
+			// exportButton         【boolean 默:false】：是否启用OrgChar的导出按钮
+			// exportFilename       【String 默:OrgChart】：当输出当前的OrgChart作为图片时，它是文件名。
+			// exportFileextension  【String 默:png】：可用的值是PNG和PDF。
+			// chartClass           【String】：当你想在一个页面上实例化多个orgcharts 时，你应该添加不同的类名来区分它们。
+			// draggable            【boolean 默:false】：用户可以拖动和删除OrgChart节点
+			// dropCriteria         【function】：用户可以构造自己的标准来限制拖动节点和删除区域之间的关系
+			// initCompleted        【function】：经常知道您的表何时已经完全初始化、数据加载和呈现，尤其是当使用Ajax数据源时
+
+
+			$('#chart-container').orgchart({
+				'data': datascource,
+				'nodeContent': 'title',
+				'draggable': true,
+				'zoom': true,
+				'pan': true
+			});
+
+		});
+	</script>
+</body>
+
+</html>
