@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	
+	<meta charset="utf-8">
+	<title>drag add orgchart list</title>
+	<link rel="stylesheet" href="css/jquery.orgchart.css">
+	<style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .orgchart-box{
+            margin: 10px 10px 0 260px;
+        }
+		#chart-container {
+			height: 500px;
+            text-align: center;
+            border: 2px dashed #aaa;
+            border-radius: 5px;
+            overflow: auto;
+		}
+		.orgchart {
+			background: #fff;
+		}
+		.orgchart.edit-state .edge {
+			display: none;
+		}
+		.orgchart .node .title {
+			height: 30px;
+			line-height: 30px;
+		}
+		#edit-panel {
+            margin-top: 10px;
+			border-radius: 4px;
+			color: #fff;
+			background-color: #449d44;
+		}
+        #edit-panel button{
+            padding: 6px 22px;
+            margin-left: 20px;
+        }
+
+        .orgchart .node-is-ging{
+            border: 2px dotted purple;
+        }
+        .orgchart .node-is-over{
+            border: 2px dotted blue;
+        }
+
+        .drop-list-box{
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+        .drop-list-item{
+            border: #ccc 1px solid;
+            padding: 6px 14px;
+            margin-bottom: 10px;
+        }
+	</style>
+</head>
+
+<body>
+
+    <div class="drop-list-box">
+        <div draggable="true" ondragstart="dragStart(event)" ondrag="dragging(event)" class="drop-list-item" data-id="ball22222-1">skiing</div>
+        <div draggable="true" ondragstart="dragStart(event)" ondrag="dragging(event)" class="drop-list-item" data-id="ball22222-2">kating</div>
+        <div draggable="true" ondragstart="dragStart(event)" ondrag="dragging(event)" class="drop-list-item" data-id="ball22222-3">Sled sport</div>
+    </div>
+
+    <div class="orgchart-box">
+        <div id="chart-container"></div>
+    </div>
+
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.orgchart.js"></script>
+
+	<script type="text/javascript">
+        /**
+         * 新增节点的数据
+         */
+        var newObj = {
+            'id': '',
+            'name': ''
+        };
+
+		$(function () {
+
+			var datascource = {
+                    'id': 'ball0000',
+    				'name': 'Ball game',
+    				'children': [
+    					{
+    						'id': 'ball11111',
+    						'name': 'Rareball',
+                            'children': [
+                                {
+                                    'id': 'ball11111-1',
+                                    'name': 'Rugbybell'
+                                },
+                                {
+                                    'id': 'ball11111-2',
+                                    'name': 'Basebell'
+                                },
+                                {
+                                    'id': 'ball11111-3',
+                                    'name': 'Tennisbell'
+                                }
+                            ]
+    					},
+                        {
+                            'id': 'ball22222',
+                            'name': 'Winter sports'
+                        },
+                        {
+                            'id': 'ball33333',
+                            'name': 'Popularball',
+                            'children': [
+                                {
+                                    'id': 'ball33333-1',
+                                    'name': 'Football'
+                                },
+                                {
+                                    'id': 'ball33333-3',
+                                    'name': 'Basketball'
+                                },
+                                {
+                                    'id': 'ball33333-2',
+                                    'name': 'Volleyball'
+                                }
+                            ]
+                        }
+    				]
+    			},
+                activeId = '',      // 选中节点的Id
+                deleteId = '',      // 删除节点的Id
+                idArr = [];         // orgchart 节点的id
+            
+            /**
+             * 初始化获取所有节点的id
+             * 
+             */
+            idArr.push( datascource.id );
+            getTreeNode( datascource.children );
+            /**
+             * 生成组织架构图
+             */
+			var oc = $('#chart-container').orgchart({
+				'data': datascource,
+				'chartClass': 'edit-state'
+			});
+            /**
+             * 绑定事件
+             */
+            bindEvent();
+            /**
+             * 添加删除节点事件
+             */
+            $(document).on('dblclick', '.orgchart .node', function(event) {
+                event.preventDefault();
+                deleteId = $(this).attr('id');
+                /**
+                 * 找到节点，删除节点的obj
+                 */
+                if( datascource.id === deleteId ){
+                    datascource = {};
+                }else{
+                    delTreeNode( datascource.children );
+                }
+
+                /**
+                 * 清空orgchart插件的html
+                 * 从新调用orgchart插件
+                 */
+                $('#chart-container').html('');
+                oc = $('#chart-container').orgchart({
+                    'data': datascource,
+                    'chartClass': 'edit-state'
+                });
+                deleteId = '';
+
+                // console.log( datascource.id === deleteId );
+            });
+            /**
+             * 递归数据
+             * 找到选取的id所在的Obj，将新的Obj添加到数组里
+             */
+            function getTreeNode( json ){
+                for(var i = 0 ; i < json.length ; i++){
+                    let item = json[i];
+                    /**
+                     * 获取所有节点的id
+                     */
+                    if( idArr.indexOf(item.id) === -1 ){
+                        idArr.push( item.id );
+                    }
+                    /**
+                     * 判断节点是否符合条件
+                     */
+                    if( activeId !== item.id ){
+                        if( item.children && item.children.length > 0 ){
+                            getTreeNode( item.children )
+                        }
+                    }else{
+                        /**
+                         * 插入obj
+                         */
+                        if( item.children ){
+                            item.children.push( newObj );
+                        }else{
+                            item.children = [];
+                            item.children.push( newObj );
+                        }
+                    }
+                }
+            };
+            function delTreeNode( json ){
+                /**
+                 * 删除列表中的id
+                 */                
+                if( idArr.indexOf(deleteId) > -1 ){
+                    let index = idArr.indexOf(deleteId);
+                    idArr.splice(index,1);
+                }
+                for(var i = 0 ; i < json.length ; i++){
+                    let item = json[i];
+                    /**
+                     * 判断节点是否符合条件
+                     */
+                    if( item.id !== deleteId ){
+                        if( item.children && item.children.length > 0 ){
+                            delTreeNode( item.children )
+                        }
+                    }else{
+                        json.splice(i, 1);
+                    }
+                }
+            }
+
+            /**
+             * 事件的绑定
+             */
+            function bindEvent(){
+                // 设置变量
+                let $$ = document.querySelector.bind(document);
+                /**
+                 * 循环id数组，找到所有节点，绑定事件
+                 */
+                for (var i = 0; i < idArr.length; i++) {
+                    var domId = idArr[i];
+                    // 当被拖动的对象在另一对象容器范围内拖动时触发此事件
+                    $$('#'+domId).ondragover = function (event) {
+                        event.preventDefault();
+                        $(this).addClass('node-is-over');
+                    };
+                    // 当被鼠标拖动的对象离开其容器范围内时触发此事件
+                    $$('#'+domId).ondragleave = function (event) {
+                        event.preventDefault();
+                        $(this).removeClass('node-is-over');
+                    };
+                    // 在一个拖动过程中，释放鼠标键时触发此事件
+                    $$('#'+domId).ondrop = function (event) {
+                        event.preventDefault();
+                        // 去除样式
+                        $(".orgchart .node").removeClass('node-is-ging node-is-over');
+                        // 获取选中节点的id
+                        activeId = $(this).attr('id');
+
+                        /**
+                         * 找到添加子节点的obj，将子节点添加
+                         */
+                        if( datascource.id !== activeId ){
+                            getTreeNode( datascource.children );
+                        }else{
+                            datascource.children.push( newObj );
+                        }
+                        /**
+                         * 清空orgchart插件的html
+                         * 从新调用orgchart插件
+                         */
+                        $('#chart-container').html('');
+                        oc = $('#chart-container').orgchart({
+                            'data': datascource,
+                            'chartClass': 'edit-state'
+                        });
+                        activeId = '';
+                        /**
+                         * id数组添加新的id
+                         */
+                        idArr.push( newObj.id );
+                        /**
+                         * 绑定事件
+                         */
+                        bindEvent();
+
+                        $(".drop-list-item.active").remove();
+                    };
+                }
+            }
+		});
+        function dragStart(event) {
+            $(event.target).addClass('active');
+            newObj = {
+                'id': $(event.target).data('id'),
+                'name': $(event.target).text()
+            };
+        }
+        function dragging(event) {
+            $(".orgchart .node").addClass('node-is-ging');
+        }
+	</script>
+</body>
+
+</html>
