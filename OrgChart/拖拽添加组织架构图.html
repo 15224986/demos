@@ -74,6 +74,11 @@
     </div>
 
 	<script type="text/javascript" src="js/jquery.min.js"></script>
+    <!--
+    *   参考网址
+    *   https://github.com/dabeng/OrgChart
+    *   https://blog.csdn.net/qq_40594137/article/details/80910040
+    -->
 	<script type="text/javascript" src="js/jquery.orgchart.js"></script>
 
 	<script type="text/javascript">
@@ -153,7 +158,45 @@
             /**
              * 绑定事件
              */
-            bindEvent();
+            $(document).on('dragover', '.orgchart .node', function(event) {
+                event.preventDefault();
+                $(this).addClass('node-is-over');
+            });
+            $(document).on('dragleave', '.orgchart .node', function(event) {
+                event.preventDefault();
+                $(this).removeClass('node-is-over');
+            });
+            $(document).on('drop', '.orgchart .node', function(event) {
+                event.preventDefault();
+                // 去除样式
+                $(".orgchart .node").removeClass('node-is-ging node-is-over');
+                // 获取选中节点的id
+                activeId = $(this).attr('id');
+                /**
+                 * 找到添加子节点的obj，将子节点添加
+                 */
+                if( datascource.id !== activeId ){
+                    getTreeNode( datascource.children );
+                }else{
+                    datascource.children.push( newObj );
+                }
+                /**
+                 * 清空orgchart插件的html
+                 * 从新调用orgchart插件
+                 */
+                $('#chart-container').html('');
+                oc = $('#chart-container').orgchart({
+                    'data': datascource,
+                    'chartClass': 'edit-state'
+                });
+                activeId = '';
+                /**
+                 * id数组添加新的id
+                 */
+                idArr.push( newObj.id );
+
+                $(".drop-list-item.active").remove();
+            });
             /**
              * 添加删除节点事件
              */
@@ -179,7 +222,6 @@
                     'chartClass': 'edit-state'
                 });
                 deleteId = '';
-
                 // console.log( datascource.id === deleteId );
             });
             /**
@@ -235,67 +277,6 @@
                     }else{
                         json.splice(i, 1);
                     }
-                }
-            }
-
-            /**
-             * 事件的绑定
-             */
-            function bindEvent(){
-                // 设置变量
-                let $$ = document.querySelector.bind(document);
-                /**
-                 * 循环id数组，找到所有节点，绑定事件
-                 */
-                for (var i = 0; i < idArr.length; i++) {
-                    var domId = idArr[i];
-                    // 当被拖动的对象在另一对象容器范围内拖动时触发此事件
-                    $$('#'+domId).ondragover = function (event) {
-                        event.preventDefault();
-                        $(this).addClass('node-is-over');
-                    };
-                    // 当被鼠标拖动的对象离开其容器范围内时触发此事件
-                    $$('#'+domId).ondragleave = function (event) {
-                        event.preventDefault();
-                        $(this).removeClass('node-is-over');
-                    };
-                    // 在一个拖动过程中，释放鼠标键时触发此事件
-                    $$('#'+domId).ondrop = function (event) {
-                        event.preventDefault();
-                        // 去除样式
-                        $(".orgchart .node").removeClass('node-is-ging node-is-over');
-                        // 获取选中节点的id
-                        activeId = $(this).attr('id');
-
-                        /**
-                         * 找到添加子节点的obj，将子节点添加
-                         */
-                        if( datascource.id !== activeId ){
-                            getTreeNode( datascource.children );
-                        }else{
-                            datascource.children.push( newObj );
-                        }
-                        /**
-                         * 清空orgchart插件的html
-                         * 从新调用orgchart插件
-                         */
-                        $('#chart-container').html('');
-                        oc = $('#chart-container').orgchart({
-                            'data': datascource,
-                            'chartClass': 'edit-state'
-                        });
-                        activeId = '';
-                        /**
-                         * id数组添加新的id
-                         */
-                        idArr.push( newObj.id );
-                        /**
-                         * 绑定事件
-                         */
-                        bindEvent();
-
-                        $(".drop-list-item.active").remove();
-                    };
                 }
             }
 		});
