@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ch-ZN">
+	<head>
+		<meta charset="UTF-8">
+		<title>joannau</title>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			.map-box {
+				width: 742px;
+				height: 560px;
+				margin: 40px auto;
+				position: relative;
+				background-color: #f0f0f0;
+			}
+			.img-box{
+				position: relative;
+			}
+			.img-box img {
+				display: block;
+			}
+			.box-bg-red{
+				width: 60px;
+				height: 60px;
+				position: absolute;
+				left: 100px;
+				top: 100px;
+				background-color: red;
+			}
+		</style>
+	</head>
+	<body>
+		
+		
+		
+		<section class="map-box" id="mapbox">
+		    <div class="map-wrap" id="mapwrap">
+		        <div id="image" class="map-image">
+					<img class="map-img" src="images/zoomFullScreen.jpg" alt="">
+				</div>
+			</div>
+		</section>
+		
+		
+		
+		<script src="vendor/jquery-1.11.3.min.js"></script>
+		<!-- 放大缩小 -->
+		<link href="vendor/smoothZoom/jquery.smoothZoom.css" rel="stylesheet">
+		<script src="vendor/smoothZoom/jquery.smoothZoom.min.js"></script> 
+		<script>
+			$(function() {
+				var mapBox = $('#mapbox');
+				var imgBox = $('#image');
+				var w = mapBox.width();
+				var h = mapBox.height();
+				var iw = '1500';
+				var ih = '1125';
+				var scale = 50;
+				$('#image').width(iw).height(ih);
+				$('#image').smoothZoom({
+					width: w,   // 显示窗口的宽度
+					height: h, // 显示窗口的高度
+					initial_ZOOM: scale, // 初始化显示的大小
+					zoom_MIN: w / iw * 50, // 最小可以缩放到
+					zoom_MAX: 500, // 最大可以缩放到
+					// zoom_BUTTONS_SHOW: false, // 放大和缩小的按钮是否显示 （默认：true）
+					// pan_BUTTONS_SHOW: false, // 移动和关闭按钮的按钮是否显示 （默认：true）
+					reset_ALIGN_TO: 'center center', // 图像可以在重置时对齐到期望的位置。例如:“ Top Left ”
+					pan_LIMIT_BOUNDARY: false,
+					mouse_DOUBLE_CLICK: false,
+					background_COLOR: 'transparent',
+					container: 'mapwrap', 						// 设置映像的容器元素(容器的id)
+					button_ALIGN: 'bottom right',				// 按钮组可以与任何边或中心对齐
+					button_MARGIN: 20,
+					// initial_POSITION: "3240 2000",						//Initial location to be focused in pixel value [150,150 or 150 150]
+					on_ZOOM_PAN_COMPLETE: function (zoomData) {
+						ratio = zoomData.ratio;
+					}
+				});
+			})
+		</script>
+	</body>
+</html>
